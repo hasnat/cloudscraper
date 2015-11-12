@@ -9,11 +9,12 @@ var request      = require('request').defaults({jar: true}), // Cookies should b
  * @param  {Function}  callback    function(error, response, body) {}
  * @param  {Object}    headers     Hash with headers, e.g. {'Referer': 'http://google.com', 'User-Agent': '...'}
  */
-cloudscraper.get = function(url, callback, headers) {
+cloudscraper.get = function(url, callback, headers, corelation) {
   performRequest({
     method: 'GET',
     url: url,
-    headers: headers
+    headers: headers,
+    corelation: corelation
   }, callback);
 };
 
@@ -24,7 +25,7 @@ cloudscraper.get = function(url, callback, headers) {
  * @param  {Function}      callback    function(error, response, body) {}
  * @param  {Object}        headers     Hash with headers, e.g. {'Referer': 'http://google.com', 'User-Agent': '...'}
  */
-cloudscraper.post = function(url, body, callback, headers) {
+cloudscraper.post = function(url, body, callback, headers, corelation) {
   var data = '',
       bodyType = Object.prototype.toString.call(body);
 
@@ -44,7 +45,8 @@ cloudscraper.post = function(url, body, callback, headers) {
     method: 'POST',
     body: data,
     url: url,
-    headers: headers
+    headers: headers,
+    corelation: corelation
   }, callback);
 }
 
@@ -191,9 +193,9 @@ function requestMethod(method) {
 
 function giveResults(options, error, response, body, callback) {
   if(typeof options.realEncoding === 'string') {
-    callback(error, response, body.toString(options.realEncoding));
+    callback(error, response, body.toString(options.realEncoding), options);
   } else {
-    callback(error, response, body);
+    callback(error, response, body, options);
   }
 }
 
